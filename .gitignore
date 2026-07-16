@@ -1,0 +1,33 @@
+# Secrets & credentials
+.env
+*.json
+!package.json
+service-account*.json
+auth.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Legacy local SQLite scratch files (no longer created by this codebase,
+# ignored defensively in case of local experimentation)
+*.db
