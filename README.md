@@ -37,6 +37,34 @@ manual cross-referencing.
 
 ---
 
+## Why this project matters
+
+QA and coaching data is where a support/BPO operation actually finds out
+whether its quality process is working — but that only holds if the
+underlying data pipeline is trustworthy. This project shows the skill
+set behind that: reading eight inconsistent, partially-duplicated scripts,
+identifying which patterns were justified and which were accidental
+complexity, and consolidating both into something a business could
+actually schedule and rely on.
+
+**Principles applied:**
+- **Consolidate before you clean** — eight scripts reimplementing the
+  same fetch/upload logic were merged into one shared client and loader
+  first, so every subsequent fix applied everywhere at once instead of
+  needing to be repeated eight times.
+- **Match the load strategy to the data's actual behavior** — incremental
+  upserts for data that changes in place, full refresh for low-volume
+  nested data, rather than one strategy applied everywhere out of habit.
+- **Remove complexity that isn't earning its keep** — a local SQLite
+  database used purely for ID-to-name lookups was replaced with a single
+  BigQuery query, because the added moving part wasn't solving a real
+  problem at this data volume.
+- **Read the code, don't just run it** — several of the improvements
+  below came from tracing what each script actually did line by line,
+  not from assuming the original logic was correct.
+
+---
+
 ## Features
 
 - **Eight independent pipelines** — users, teams, roles, interactions,
@@ -56,7 +84,11 @@ manual cross-referencing.
 
 ### Bugs fixed during the rebuild
 
-Worth calling out explicitly, since they reflect real debugging/review work:
+Writing clean code for a new project is one skill; reading someone else's
+inconsistent, partially-working scripts and finding the defects hiding
+inside them is a different one — closer to what maintaining a real
+production pipeline actually looks like. These were found by tracing the
+original logic, not assumed:
 
 - **`interactions`**: the original script appended each *page* of API
   results as a single row (so one row held up to 100 interactions nested
