@@ -37,31 +37,24 @@ manual cross-referencing.
 
 ---
 
-## Why this project matters
+## Engineering approach
 
 QA and coaching data is where a support/BPO operation actually finds out
 whether its quality process is working — but that only holds if the
-underlying data pipeline is trustworthy. This project shows the skill
-set behind that: reading eight inconsistent, partially-duplicated scripts,
-identifying which patterns were justified and which were accidental
-complexity, and consolidating both into something a business could
-actually schedule and rely on.
+underlying data pipeline is trustworthy. The design choices here are
+built around that:
 
-**Principles applied:**
-- **Consolidate before you clean** — eight scripts reimplementing the
-  same fetch/upload logic were merged into one shared client and loader
-  first, so every subsequent fix applied everywhere at once instead of
-  needing to be repeated eight times.
+- **Consolidate before optimizing** — the eight original endpoints shared
+  the same fetch/upload logic; that logic was merged into one shared
+  client and loader so any future fix applies everywhere at once, instead
+  of needing to be repeated across eight files.
 - **Match the load strategy to the data's actual behavior** — incremental
   upserts for data that changes in place, full refresh for low-volume
   nested data, rather than one strategy applied everywhere out of habit.
-- **Remove complexity that isn't earning its keep** — a local SQLite
-  database used purely for ID-to-name lookups was replaced with a single
-  BigQuery query, because the added moving part wasn't solving a real
-  problem at this data volume.
-- **Read the code, don't just run it** — several of the improvements
-  below came from tracing what each script actually did line by line,
-  not from assuming the original logic was correct.
+- **Remove complexity that isn't earning its keep** — ID-to-name lookups
+  are handled with a single BigQuery query into a Python dict rather than
+  a local database, since a local database wasn't solving a real problem
+  at this data volume.
 
 ---
 
@@ -83,12 +76,6 @@ actually schedule and rely on.
 - **Structured logging** throughout.
 
 ### Bugs fixed during the rebuild
-
-Writing clean code for a new project is one skill; reading someone else's
-inconsistent, partially-working scripts and finding the defects hiding
-inside them is a different one — closer to what maintaining a real
-production pipeline actually looks like. These were found by tracing the
-original logic, not assumed:
 
 - **`interactions`**: the original script appended each *page* of API
   results as a single row (so one row held up to 100 interactions nested
