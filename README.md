@@ -10,8 +10,7 @@ data into a queryable analytics layer.
 
 ## What problem this solves
 
-Contact centers and BPOs (this project was built against a QA/testing
-operation) run their quality process inside Playvox: agents are
+Contact centers and BPOs run their quality process inside Playvox: agents are
 evaluated against scorecards, low scores trigger coaching, and calibration
 sessions keep multiple QA analysts scoring consistently. That data is
 operationally useful inside Playvox's own UI, but it's hard to analyze
